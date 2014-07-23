@@ -155,7 +155,8 @@ side facing you
 Great, now lets go to the software part. Go to **Build** -> **Code** and choose
 **SMART HOME**.
 
-Then go to **Libraries**, find **RCSwitch** and click blue button **INCLUDE IN APP**.
+Then go to **Libraries**, find **RCSwitch**, click blue button **INCLUDE IN APP**,
+select **SMART HOME** and click **ADD TO THIS APP**.
 
 > **RCSwitch** is an open source library which handles all communication with
 > 433/434MHz devices like our sockets. It also works on Arduino and Raspberry Pi.
@@ -197,3 +198,69 @@ When this is done, we can blink again but this time using a lamp! Type this insi
 **Flash** it and behold your remote controlled lamp!
 
 ## Adding cloud function
+
+Automatic turning on and off is ok, but doing this remotely using internet is better!
+
+Spark Cloud allows you to register a function which can be called from any place
+in the world and will be sent to the Core and executed on it. Lets add one at
+the end of **setup()** function:
+
+```
+Spark.function("setstate", setState);
+```
+
+Now we have to write code which is executed when we call this function. Add this
+before **setup()**:
+
+```
+int setState(String command) {
+  if (command == "on") {
+    mySwitch.sendTriState("YOUR_ON_TRISTATE_CODE");
+  } else if (command == "off") {
+    mySwitch.sendTriState("YOUR_OFF_TRISTATE_CODE");
+  }
+  return 200;
+}
+```
+
+and remove contents of **loop()** (only leave opening and closing curly brackets).
+
+Now **Flash** the Core with this code. When it's done you can call it by making
+a request to Spark Cloud. For this purpose you can install [Spark CLI](https://github.com/spark/spark-cli/),
+try manually send request using `curl` or similar tool using [Spark Cloud API](http://docs.spark.io/api/).
+
+But especially for this tutorial, I made a web interface which doesn't require any
+installation.
+
+**Just go to [http://suda.github.io/spark-web-interface/](http://suda.github.io/spark-web-interface/)**
+and log in using credential from **Build** tool.
+
+You should see list of cores and available functions. As we defined only one called
+**setstate**, you can click **Execute** next to it. A wild dialog appears!
+All cloud functions can receive parameters in form of a string. In **setState()**
+function we check for two values:
+
+* **on**: turns **on** the light
+* **off**: turns **off** the light
+
+Type **on** in the dialog and click **OK**. Relatively quick the light is on!
+Now try passing **off**. As you can see in **Execution history** panel, all
+executed functions are logged here, so you can call them again along with their
+parameters so there's no need to type on and off every time.
+
+## What next?
+
+You finished this workshop but it doesn't mean you should stop exploring wonderful
+world of Internet of Things (fancy name for devices which can communicate with
+each other ;)). Here are some things you can do:
+
+* Create mobile app to control your lights
+* Use Google's speech recognition service to control lights using voice
+* Use Bluetooth module to check if your phone is near and if it's not turn off
+the lights to save energy
+
+Of course you're not limited to lights. There are 433MHz [doorbells](http://www.dx.com/p/38-melody-wireless-doorbell-transmitter-receiver-set-white-1-x-23a-12v-2-x-aa-126667?Utm_rid=62061796&Utm_source=affiliate),
+[smoke detectors](http://www.dx.com/p/yg-01-wireless-smoke-detector-alarm-white-1-x-6f22-145504?Utm_rid=62061796&Utm_source=affiliate), [meteo stations](http://www.dx.com/p/wireless-weather-station-w-alarm-clock-calendar-barometer-hygrometer-thermometer-126095?Utm_rid=62061796&Utm_source=affiliate) and much more!
+
+You're not limited to 433MHz either! You can directly connect many modules to
+the Core to create a device which can solve your daily problems.
