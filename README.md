@@ -43,7 +43,7 @@ Once you've opened a serial connection, hit **w** key. Core should respond with:
 SSID:
 ```
 
-Type network name (it should be at the end of this tutorial). Remember about lower
+Type network name (it should be inside of the box with Spark Core). Remember about lower
 and upper characters because it's case sensitive. Then hit **Enter**/**Return**.
 
 Next Core will ask about security:
@@ -85,7 +85,7 @@ working connected to the cloud!
 
 Easiest way to program Core is to use web IDE called **Build**. Go to
 [https://www.spark.io/login](https://www.spark.io/login) and enter credentials
-from end of this tutorial.
+from the card inside of the Spark Core box.
 
 After logging in, you should see a panel asking to create new app:
 
